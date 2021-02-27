@@ -1,127 +1,202 @@
 const canvas = document.getElementById("target")
 const c = canvas.getContext("2d")
 
-canvas.width=700
-canvas.height= window.innerHeight
+canvas.width = 700
+canvas.height = window.innerHeight
+    //Objects 
+const gameObjectStorage = [];
+const carStorage = [];
+const logStorage = [];
+var list_frog = [];
 
-const frog_size_x= 50
-const frog_size_y=canvas.height/14
+const frog_size_x = 50
+const frog_size_y = canvas.height / 14
 
-class Background{
-    constructor(x,y,width,height,color)
-    {
-        this.x=x
-        this.y=y
-        this.width=width
-        this.height=height
-        this.color=color
-    }
+var range_color = ['rgb(2, 71, 181)',
+    'rgb(193, 253, 111)',
+    'rgb(172, 127, 203)',
+    'rgb(203, 53, 175)',
+    'rgb(226, 45, 44)'
+]
 
-    update()
-    {}
+var temp= -1
+var direction= -1
 
-    draw(){
-        c.beginPath()
-        c.rect(this.x,this.y,this.width,this.height,this.color)
-        c.fillStyle=this.color
-        c.fill()
-    }
-  
+for (let i = 0; i < 5; i++) {
+      
+    carStorage.push(
+        new Car(
+            (Math.random() > 0.5 ? -100 : canvas.width), // x coord  
+            canvas.height - (i + 2) * frog_size_y, // y coord
+            1 + Math.random() * 3,
+            frog_size_x * (1 + Math.random() * 3), //size x
+            frog_size_y
+        ) // size y
+    );
 }
 
-class Frog{
-    constructor(x,y,w,h)
-    {
-        this.x=x
-        this.y=y
-        this.w=w
-        this.h=h
-        this.color='red'
-    }
-    moveUp() {
-        // when key up arrow is pressed,
-        // then decrease y coordinate by the amout of movementSpeedY value
-        console.log(this.x,this.y)
-        
-        if(this.y   > this.h)
-        {
-        this.y = this.y - this.h;
-       
-        }
-      }
-
-      moveDown() {
-        if(this.y + frog_size_y < canvas.height)
-        {
-        this.y = this.y + this.h;
-       
-        }
-       
-      }
-
-      moveLeft() {
-        if(this.x > 0)
-        {
-        this.x = this.x - this.w;
-       
-        }
-      }
-
-      moveRight() {
-        if(this.x +frog_size_x < canvas.width)
-        {
-        this.x = this.x + this.w;
-       
-        }
-
-      }
-    draw(){
-        c.beginPath()
-        c.rect(this.x,this.y,this.w,this.h)
-        c.fillStyle=this.color
-        c.fill()
-    }
-    update()
-    {   
-        
-    }
-    
+for (let i = 0; i < 5; i++) {
+    logStorage.push(
+        new Log((Math.random() > 0.5 ? -100 : canvas.width), // x coord
+            canvas.height/2 - (i + 1) * frog_size_y, // y coord
+            // (Math.random() * 10) * (Math.random() > 0.5 ? 1 : -1), // x speed
+            1 + Math.random() * 3,
+            frog_size_x *3, //size x
+            frog_size_y
+        ) // size y
+    );
 }
 
-const frog= new Frog(Math.floor(Math.random() * 14)*frog_size_x, canvas.height - frog_size_y , frog_size_x, frog_size_y)
 
-const gameObjectStorage= [];
-gameObjectStorage.push(frog)
+
+
+const water = new Background(0, 0, canvas.width, canvas.height / 2, 'blue')
+gameObjectStorage.push(water)
+
+const grass = new Background(0, 0, canvas.width, frog_size_y - 20, 'green')
+for (let i = 0; i < 6; i++) {
+    const rectangle = new Rectangle(frog_size_x * 2.7 * i,
+        0,
+        (frog_size_x) - 20,
+        frog_size_y * 2,
+        'green')
+    gameObjectStorage.push(rectangle)
+}
+const safe_zone = new Background(0, canvas.height / 2, canvas.width, frog_size_y, 'black')
+const start_local = new Background(0, canvas.height - frog_size_y, canvas.width, frog_size_y, 'black')
+var frog = new Frog(Math.floor(Math.random() * 14) * frog_size_x,
+    canvas.height - frog_size_y,
+    frog_size_x,
+    frog_size_y)
+
+gameObjectStorage.push(grass)
+gameObjectStorage.push(start_local)
+gameObjectStorage.push(safe_zone)
+
+// gameObjectStorage.push(frog)
+
+var live = 2
+
+// function updateCar() {
+//     // clear the canvas
+//     console.log("update screen called");
+//     c.clearRect(0, 0, canvas.width, canvas.height);
+
+
+
+//     frog.draw();
+
+//     window.requestAnimationFrame(updateCar);
+// }
+
+
 
 function updateScreen() {
-    // clear the canvas
-    c.clearRect(0,0,canvas.width,canvas.height);
+    
 
-    for(let i = 0; i < gameObjectStorage.length; i++) {
-      gameObjectStorage[i].update();
-      gameObjectStorage[i].draw();
+    c.clearRect(0, 0, canvas.width, canvas.height);
+
+
+
+    for (let i = 0; i < gameObjectStorage.length; i++) {
+        setTimeout(gameObjectStorage[i].update(), 2000);
+        gameObjectStorage[i].update()
+        gameObjectStorage[i].draw();
+
     }
+    for (let i = 0; i < logStorage.length; i++) {
+        logStorage[i].update();
+        logStorage[i].draw();
+       
+    }
+    frog.update()
+    frog.draw()
+    for(let i = 0 ;i <list_frog.length;i++)
+    {
+        list_frog[i].draw()
+    }
+   
+  
+    for (let i = 0; i < carStorage.length; i++) {
+        carStorage[i].update();
+        carStorage[i].draw();
+       
+    }
+    if(list_frog.length == 5 )
+    {
+        c.font = "50px Georgia"
+        c.fillStyle="white"
+        c.fillText("You win ! Your score:", 20, canvas.height / 2 - 10)
+        c.fillText("Press any button to continue", 20, canvas.height /2 +frog_size_y -10)
+       
+        window.cancelAnimationFrame(updateScreen)
+        PressAnyKey()
+       
+    }
+    
+    if (live < 0 ) {
+        c.font = "50px Georgia"
+        c.fillStyle="white"
+        c.fillText("You die !!!", canvas.width / 4, canvas.height / 2 - 10)
+        c.fillText("Press any button to continue", 20, canvas.height /2 +frog_size_y -10)
+        console.log("Live <0")
+        window.cancelAnimationFrame(updateScreen)
+        PressAnyKey()
 
-    window.requestAnimationFrame(updateScreen);
+
+    }
+    
+
+    if( live >= 0 && list_frog.length <5) {
+        c.font = "50px Georgia red"
+        c.fillStyle="white"
+        c.fillText("Your live: " + live, canvas.width / 4, canvas.height / 2 - 10)
+
+        window.requestAnimationFrame(updateScreen);
+    }
+    
+
 }
-window.requestAnimationFrame(updateScreen);
 
 
+updateScreen()
 
-window.addEventListener('keydown', function(event){
-    console.log(event.code)
-    switch(event.code) {
-      case "ArrowLeft":
-        frog.moveLeft();
-        break;
-      case "ArrowUp":
-        frog.moveUp();
-        break;
-      case "ArrowRight":
-        frog.moveRight();
-        break;
-      case "ArrowDown":
-        frog.moveDown();
-        break;
-    }
-  });
+
+function PressAnyKey() {
+    window.addEventListener('keydown', function(e) {
+
+        if (e) {
+            location.reload()
+                // frog.x = canvas.width / 2
+                // frog.y = canvas.height - frog_size_y
+                // window.requestAnimationFrame(updateScreen);
+        }
+    })
+}
+if (live > 0) {
+    Move()
+}
+
+function Move() {
+    window.addEventListener('keydown', function(event) {
+
+        {
+            switch (event.code) {
+                case "ArrowLeft":
+                    frog.moveLeft();
+
+                    break;
+                case "ArrowUp":
+                    frog.moveUp();
+                    break;
+                case "ArrowRight":
+                    frog.moveRight();
+                    break;
+                case "ArrowDown":
+                    frog.moveDown();
+                    break;
+
+            }
+        }
+    });
+}
