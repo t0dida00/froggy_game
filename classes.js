@@ -76,13 +76,13 @@ class Frog {
 
     }
     draw() {
-        // c.beginPath()
-        // c.rect(this.x, this.y, this.w, this.h)
-        // c.fillStyle = this.color
-        // c.fill()
+        c.beginPath()
+        c.rect(this.x, this.y, this.w, this.h)
+        c.fillStyle = this.color
+        c.fill()
  
         
-        c.drawImage(froggerSheet, this.x, this.y,this.w,this.h);
+        // c.drawImage(froggerSheet, this.x, this.y,this.w,this.h);
     }
     update() {
      

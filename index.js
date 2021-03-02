@@ -210,13 +210,13 @@ function updateScreen() {
 // const list_image= ['./img/frog.png','/img/frog.png']
 
 
-const froggerSheet = new Image();
-froggerSheet.onload = () => {
-  updateScreen()
-}
-froggerSheet.src = './img/frog.png';
+// const froggerSheet = new Image();
+// froggerSheet.onload = () => {
+//   updateScreen()
+// }
+// froggerSheet.src = './img/frog.png';
 
-
+updateScreen()
 function PressAnyKey() {
     window.addEventListener('keydown', function(e) {
 
