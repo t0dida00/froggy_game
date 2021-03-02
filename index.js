@@ -214,7 +214,7 @@ const froggerSheet = new Image();
 froggerSheet.onload = () => {
   updateScreen()
 }
-froggerSheet.src = '../img/frog.png';
+froggerSheet.src = './img/frog.png';
 
 
 function PressAnyKey() {
